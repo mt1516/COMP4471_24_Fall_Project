@@ -74,10 +74,13 @@ with torch.inference_mode():
             # outputs = outputs.mean(dim=1).mean(dim=1)
             outputs = infer(processor, model, data)
             tensor = torch.cat((tensor, outputs), 0)
-            if not i % 999 and i != 0:
-                torch.save(tensor, f"image_features/{args.split}/{args.split}_features_{(i+1)//1000}.pt")
-                print(f"{args.split} checkpoint {(i+1)//1000} saved")
+            if not (i+1) % 1000:
+                torch.save(tensor, f"image_features/{args.split}/{args.split}_features_{((i+1)//1000)-1}.pt")
+                print(f"{args.split} checkpoint {((i+1)//1000)-1} saved")
                 tensor = torch.tensor([]).to(model.device)
         except Exception as e:
             with open(f"image_features/{args.split}_features_error.txt", "a") as f:
                 f.write(f"{i}: {e}\n")
+    if tensor.size(0):
+        torch.save(tensor, f"image_features/{args.split}/{args.split}_features_last.pt")
+        print(f"{args.split} checkpoint last saved")
