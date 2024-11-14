@@ -1,1 +1,3 @@
 model
+/data/ImageNet1k/image_features/
+/data/ImageNet1k/image_labels/

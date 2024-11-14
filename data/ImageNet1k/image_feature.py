@@ -10,9 +10,9 @@ args = parser.parse_args()
 def arg_check(args):
     if args.split and args.split not in ["train", "validation", "test"]:
         raise ValueError("Invalid split argument. Must be one of: train, validation, test")
-    if args.skip and args.skip < 0 or args.skip:
+    if args.skip and args.skip < 0:
         raise ValueError("Invalid skip argument. Must be a positive integer")
-    if args.take and args.take < 0 or args.take:
+    if args.take and args.take < 0:
         raise ValueError("Invalid take argument. Must be a positive integer")
     return args
 
@@ -29,7 +29,7 @@ from PIL import Image
 
 if args.split is None:
     args.split = "train"
-dataset = load_dataset("ILSVRC/imagenet-1k", split=args.split, streaming=True)
+dataset = load_dataset("ILSVRC/imagenet-1k", split=args.split, streaming=True, trust_remote_code=True)
 if args.skip:
     dataset = dataset.skip(args.skip)
 if args.take:
@@ -63,7 +63,7 @@ def infer(processor, model, data):
         
 with torch.inference_mode():
     tensor = torch.tensor([]).to(model.device)
-    for i, data in enumerate(tqdm(dataset)):
+    for i, data in enumerate(tqdm(dataset), start=args.skip if args.skip else 0):
         try:
             # inputs = processor(
             #     images=data["image"],
