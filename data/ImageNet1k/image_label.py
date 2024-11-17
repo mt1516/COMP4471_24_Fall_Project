@@ -84,5 +84,5 @@ for i, data in enumerate(tqdm(dataset), start=args.skip if args.skip else 0):
         with open(f"image_labels/{args.split}_labels_.txt", "a") as f:
             f.write(f"{i}: {e}\n")
 if tensor.size(0):
-    torch.save(tensor, f"image_labels/{args.split}/{args.split}_labels_.pt")
+    torch.save(tensor, f"image_labels/{args.split}/{args.split}_labels_last.pt")
     print(f"{args.split} checkpoint last saved")
